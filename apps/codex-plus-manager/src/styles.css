@@ -1310,6 +1310,17 @@ body {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.language-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.language-segmented button {
+  min-width: 92px;
+}
+
 .feature-toggle {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;

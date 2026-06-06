@@ -140,6 +140,11 @@ pub enum RelayMode {
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct BackendSettings {
+    #[serde(
+        default = "default_language",
+        deserialize_with = "deserialize_language"
+    )]
+    pub language: String,
     #[serde(rename = "codexAppPath", default)]
     pub codex_app_path: String,
     #[serde(rename = "codexExtraArgs", default)]
@@ -221,6 +226,7 @@ pub struct BackendSettings {
 impl Default for BackendSettings {
     fn default() -> Self {
         Self {
+            language: default_language(),
             codex_app_path: String::new(),
             codex_extra_args: Vec::new(),
             provider_sync_enabled: false,
@@ -351,6 +357,18 @@ pub fn default_api_key_env() -> String {
     "CUSTOM_OPENAI_API_KEY".to_string()
 }
 
+pub fn default_language() -> String {
+    "en".to_string()
+}
+
+pub fn normalize_language(value: &str) -> String {
+    match value.trim().to_ascii_lowercase().as_str() {
+        "vi" | "vi-vn" => "vi".to_string(),
+        "en" | "en-us" | "en-gb" => "en".to_string(),
+        _ => default_language(),
+    }
+}
+
 pub fn default_true() -> bool {
     true
 }
@@ -386,6 +404,15 @@ where
     D: serde::Deserializer<'de>,
 {
     Ok(Option::<String>::deserialize(deserializer)?.unwrap_or_default())
+}
+
+fn deserialize_language<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    Ok(Option::<String>::deserialize(deserializer)?
+        .map(|value| normalize_language(&value))
+        .unwrap_or_else(default_language))
 }
 
 pub fn normalize_codex_extra_args(args: &[String]) -> Vec<String> {
@@ -479,6 +506,12 @@ impl SettingsStore {
 }
 
 fn merge_known_setting_fields(target: &mut Map<String, Value>, source: &Map<String, Value>) {
+    if let Some(value) = source.get("language").and_then(Value::as_str) {
+        target.insert(
+            "language".to_string(),
+            Value::String(normalize_language(value)),
+        );
+    }
     if let Some(value) = source.get("codexAppPath").and_then(Value::as_str) {
         target.insert("codexAppPath".to_string(), Value::String(value.to_string()));
     }
@@ -709,6 +742,7 @@ fn settings_to_object(settings: &BackendSettings) -> Map<String, Value> {
 }
 
 fn normalize_settings_config_sections(mut settings: BackendSettings) -> BackendSettings {
+    settings.language = normalize_language(&settings.language);
     let (common, extracted_context) =
         split_context_config_sections(&settings.relay_common_config_contents);
     let context = join_config_sections(&[
@@ -821,6 +855,7 @@ mod tests {
     #[test]
     fn settings_default_matches_expected_behavior() {
         let settings = BackendSettings::default();
+        assert_eq!(settings.language, "en");
         assert!(!settings.provider_sync_enabled);
         assert!(settings.relay_profiles_enabled);
         assert!(!settings.ccs_link_enabled);
@@ -839,6 +874,17 @@ mod tests {
         assert_eq!(settings.relay_test_model, default_relay_test_model());
         assert!(!settings.cli_wrapper_enabled);
         assert_eq!(settings.cli_wrapper_api_key_env, "CUSTOM_OPENAI_API_KEY");
+    }
+
+    #[test]
+    fn settings_language_normalizes_supported_values() {
+        let english: BackendSettings = serde_json::from_str(r#"{"language":"en-US"}"#).unwrap();
+        let vietnamese: BackendSettings = serde_json::from_str(r#"{"language":"vi-VN"}"#).unwrap();
+        let fallback: BackendSettings = serde_json::from_str(r#"{"language":"zh-CN"}"#).unwrap();
+
+        assert_eq!(english.language, "en");
+        assert_eq!(vietnamese.language, "vi");
+        assert_eq!(fallback.language, "en");
     }
 
     #[test]

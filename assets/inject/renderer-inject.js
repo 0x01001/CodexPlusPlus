@@ -702,11 +702,14 @@
       .codex-plus-service-tier-status { color: #a1a1aa; font-size: 12px; line-height: 1.3; text-align: right; }
       .codex-plus-service-tier-status[data-status="ok"] { color: #34d399; }
       .codex-plus-service-tier-status[data-status="failed"] { color: #f87171; }
-      .codex-plus-service-tier-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+      .codex-plus-service-tier-actions,
+      .codex-plus-language-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
       .codex-plus-service-tier-thread-actions { opacity: .88; align-items: center; }
       .codex-plus-service-tier-thread-label { color: #a1a1aa; font: 12px/1.2 system-ui, sans-serif; white-space: nowrap; }
-      .codex-plus-service-tier-button { border: 1px solid rgba(255,255,255,.18); border-radius: 7px; background: #3f3f46; color: #f3f4f6; font: 12px system-ui, sans-serif; padding: 5px 8px; white-space: nowrap; }
-      .codex-plus-service-tier-button[data-active="true"] { border-color: #10a37f; background: rgba(16,163,127,.22); color: #6ee7b7; }
+      .codex-plus-service-tier-button,
+      .codex-plus-language-button { border: 1px solid rgba(255,255,255,.18); border-radius: 7px; background: #3f3f46; color: #f3f4f6; font: 12px system-ui, sans-serif; padding: 5px 8px; white-space: nowrap; }
+      .codex-plus-service-tier-button[data-active="true"],
+      .codex-plus-language-button[data-active="true"] { border-color: #10a37f; background: rgba(16,163,127,.22); color: #6ee7b7; }
       .codex-plus-service-tier-button:disabled { opacity: .55; cursor: not-allowed; }
       .${codexServiceTierBadgeClass} {
         display: inline-flex;
@@ -1025,7 +1028,179 @@
     refreshCodexServiceTierControls();
   }
 
-  let codexPlusBackendSettings = { providerSyncEnabled: false, enhancementsEnabled: true, launchMode: "patch", codexAppVersion: "" };
+  let codexPlusBackendSettings = { providerSyncEnabled: false, enhancementsEnabled: true, launchMode: "patch", codexAppVersion: "", language: "en" };
+  const codexPlusI18nEntries = [
+    ["关闭", "Close", "Đóng"],
+    ["主页", "Home", "Trang chủ"],
+    ["用户脚本", "User scripts", "Script người dùng"],
+    ["推荐内容", "Recommendations", "Đề xuất"],
+    ["请作者喝咖啡", "Support the author", "Ủng hộ tác giả"],
+    ["后端连接", "Backend connection", "Kết nối backend"],
+    ["每 5 秒检查一次 launcher 后端状态；断开时可尝试修复后端运行。", "Checks the launcher backend every 5 seconds. If disconnected, try repairing the backend.", "Kiểm tra backend launcher mỗi 5 giây. Nếu mất kết nối, hãy thử sửa backend."],
+    ["正在检查后端…", "Checking backend...", "Đang kiểm tra backend..."],
+    ["修复后端运行", "Repair backend", "Sửa backend"],
+    ["界面语言", "Interface language", "Ngôn ngữ giao diện"],
+    ["选择 Codex++ 管理工具和注入菜单使用的语言。", "Choose the language used by the Codex++ manager and injected menu.", "Chọn ngôn ngữ cho trình quản lý Codex++ và menu được inject."],
+    ["页面功能增强", "Page enhancements", "Tăng cường trang"],
+    ["关闭后停用删除、导出、移动、Timeline、插件相关和菜单位置增强。", "Disables delete, export, move, timeline, plugin, and menu placement enhancements.", "Tắt xóa, xuất, di chuyển, timeline, plugin và tăng cường vị trí menu."],
+    ["插件市场解锁", "Plugin marketplace unlock", "Mở khóa chợ plugin"],
+    ["兼容增强模式下无需开启；ChatGPT 登录态会保留官方插件市场。", "Not needed in compatible enhancement mode. The ChatGPT login keeps the official plugin marketplace.", "Không cần bật trong chế độ tương thích. Đăng nhập ChatGPT vẫn giữ chợ plugin chính thức."],
+    ["API Key 模式下扩展插件市场请求，尽量显示完整插件列表。", "Expands plugin marketplace requests in API key mode to show a fuller plugin list.", "Mở rộng request chợ plugin trong chế độ API key để hiển thị danh sách đầy đủ hơn."],
+    ["强制解锁入口", "Force unlock entry", "Buộc mở lối vào"],
+    ["兼容增强模式下无需开启；官方登录态会保留插件入口。", "Not needed in compatible enhancement mode. Official login keeps the plugin entry.", "Không cần bật trong chế độ tương thích. Đăng nhập chính thức vẫn giữ lối vào plugin."],
+    ["恢复 1.1.9 的入口解锁方式，强制显示并启用插件入口。", "Restores the 1.1.9 entry unlock behavior to force-show and enable the plugin entry.", "Khôi phục cách mở lối vào của 1.1.9 để buộc hiển thị và bật plugin."],
+    ["特殊插件强制安装", "Force special plugin install", "Buộc cài plugin đặc biệt"],
+    ["兼容增强模式下无需开启；不会改插件安装入口。", "Not needed in compatible enhancement mode. Plugin install entries are not changed.", "Không cần bật trong chế độ tương thích. Lối cài plugin không bị thay đổi."],
+    ["解除 App unavailable / 应用不可用导致的前端安装禁用。", "Removes frontend install blocking caused by App unavailable states.", "Gỡ chặn cài đặt frontend do trạng thái App unavailable / ứng dụng không khả dụng."],
+    ["模型白名单解锁", "Model whitelist unlock", "Mở khóa whitelist model"],
+    ["从环境变量和 Codex config.toml 中的中转站 /v1/models 拉取模型，并补进模型选择列表。", "Fetches models from relay /v1/models endpoints in environment variables and Codex config.toml, then adds them to the selector.", "Lấy model từ endpoint /v1/models của relay trong biến môi trường và Codex config.toml, rồi thêm vào danh sách chọn."],
+    ["Fast 按钮", "Fast button", "Nút Fast"],
+    ["显示服务模式切换按钮，并允许把请求切到 Fast / priority；默认关闭以避免误触高价服务模式。", "Shows service mode controls and can switch requests to Fast / priority. Off by default to avoid accidental higher-cost mode.", "Hiển thị nút đổi service mode và cho phép chuyển request sang Fast / priority. Mặc định tắt để tránh vô tình dùng chế độ giá cao."],
+    ["服务模式", "Service mode", "Chế độ dịch vụ"],
+    ["继承使用 config.toml 的 service tier；全局模式覆盖全部 thread；自定义允许按 thread 覆盖。", "Inherit uses config.toml service tier. Global mode overrides all threads. Custom allows per-thread overrides.", "Kế thừa dùng service tier trong config.toml. Chế độ toàn cục áp dụng cho mọi thread. Tùy chỉnh cho phép override theo thread."],
+    ["正在读取…", "Loading...", "Đang đọc..."],
+    ["继承", "Inherit", "Kế thừa"],
+    ["全局 Standard", "Global Standard", "Standard toàn cục"],
+    ["全局 Fast", "Global Fast", "Fast toàn cục"],
+    ["自定义", "Custom", "Tùy chỉnh"],
+    ["当前 thread 覆盖", "Current thread override", "Override thread hiện tại"],
+    ["会话删除", "Session delete", "Xóa phiên"],
+    ["在会话列表悬停显示删除按钮，并支持撤销。", "Shows a delete button on session hover and supports undo.", "Hiển thị nút xóa khi rê chuột trên danh sách phiên và hỗ trợ hoàn tác."],
+    ["Markdown 导出", "Markdown export", "Xuất Markdown"],
+    ["在会话列表显示导出按钮，按本地 rollout 导出带时间戳的 Markdown。", "Shows an export button in the session list and exports timestamped Markdown from local rollouts.", "Hiển thị nút xuất trong danh sách phiên và xuất Markdown có timestamp từ rollout cục bộ."],
+    ["会话项目移动", "Move session project", "Chuyển dự án của phiên"],
+    ["在会话列表悬停显示移动按钮，可移动到普通对话或其他本地项目。", "Shows a move button on session hover and can move sessions to general chats or other local projects.", "Hiển thị nút chuyển khi rê chuột và có thể chuyển phiên sang trò chuyện thường hoặc dự án cục bộ khác."],
+    ["对话 Timeline", "Conversation timeline", "Timeline hội thoại"],
+    ["在对话右侧显示用户提问时间线，悬停查看摘要，点击跳转。", "Shows a question timeline on the right side of conversations. Hover for summaries and click to jump.", "Hiển thị timeline câu hỏi bên phải hội thoại. Rê chuột để xem tóm tắt, bấm để nhảy tới."],
+    ["对话居中宽度", "Centered conversation width", "Độ rộng hội thoại căn giữa"],
+    ["开启后把主对话和输入框限制到固定最大宽度，适合大屏阅读。", "Limits the main conversation and input box to a fixed max width for large screens.", "Giới hạn hội thoại chính và ô nhập theo độ rộng tối đa cố định, phù hợp màn hình lớn."],
+    ["切换对话保留位置", "Restore scroll position", "Khôi phục vị trí cuộn"],
+    ["开启后在不同 thread 之间切换时恢复到上一次浏览位置，不再自动跳到底部。", "Restores the last scroll position when switching threads instead of jumping to the bottom.", "Khôi phục vị trí đọc trước đó khi đổi thread, không tự nhảy xuống cuối."],
+    ["创建", "Create", "Tạo"],
+    ["历史会话修复", "History session repair", "Sửa phiên lịch sử"],
+    ["切换官方登录、混合 API 或纯 API 后，让旧对话重新显示在当前模式下。", "Makes old conversations appear again after switching official login, mixed API, or pure API modes.", "Giúp hội thoại cũ hiển thị lại sau khi đổi giữa đăng nhập chính thức, API hỗn hợp hoặc pure API."],
+    ["页面增强模式", "Enhancement mode", "Chế độ tăng cường"],
+    ["兼容增强：保留会话删除、导出、项目移动、Timeline 和用户脚本，仅关闭插件入口相关增强。", "Compatible enhancement keeps session delete, export, project move, timeline, and user scripts, while disabling plugin-entry enhancements.", "Tăng cường tương thích giữ xóa phiên, xuất, chuyển dự án, timeline và script người dùng, chỉ tắt phần liên quan lối vào plugin."],
+    ["完整增强：加载插件入口、强制安装、项目路径移动等全部页面能力。", "Full enhancement loads plugin entry, force install, project path move, and all page features.", "Tăng cường đầy đủ tải lối vào plugin, buộc cài, chuyển đường dẫn dự án và mọi tính năng trang."],
+    ["打开管理工具", "Open manager", "Mở trình quản lý"],
+    ["原生菜单栏位置", "Native menu bar placement", "Vị trí trên menu gốc"],
+    ["把 Codex++ 菜单插入顶部原生菜单栏；默认关闭以避免页面重渲染冲突。", "Places the Codex++ menu in the top native menu bar. Off by default to avoid rerender conflicts.", "Chèn menu Codex++ vào thanh menu gốc phía trên. Mặc định tắt để tránh xung đột khi render lại."],
+    ["打开 DevTools", "Open DevTools", "Mở DevTools"],
+    ["打开当前 Codex 页面开发者工具，方便查看用户脚本报错。", "Opens DevTools for the current Codex page to inspect user script errors.", "Mở DevTools cho trang Codex hiện tại để xem lỗi script người dùng."],
+    ["关于 Codex++", "About Codex++", "Giới thiệu Codex++"],
+    ["Codex++ 是通过外部 launcher 注入的增强菜单，不修改 Codex App 原始安装文件。", "Codex++ is an enhancement menu injected by the external launcher. It does not modify the original Codex App installation.", "Codex++ là menu tăng cường được inject bởi launcher bên ngoài, không sửa file cài đặt gốc của Codex App."],
+    ["Discord 社区", "Discord community", "Cộng đồng Discord"],
+    ["加入 Discord 获取更新消息、反馈问题或交流使用体验。", "Join Discord for updates, feedback, and discussion.", "Tham gia Discord để nhận cập nhật, phản hồi lỗi và trao đổi trải nghiệm."],
+    ["Telegram 频道", "Telegram channel", "Kênh Telegram"],
+    ["加入 Telegram 获取更新消息和交流使用体验。", "Join Telegram for updates and discussion.", "Tham gia Telegram để nhận cập nhật và trao đổi trải nghiệm."],
+    ["提出问题", "Open issue", "Báo lỗi"],
+    ["打开 GitHub Issues 反馈问题或建议。", "Open GitHub Issues for bugs or suggestions.", "Mở GitHub Issues để phản hồi lỗi hoặc góp ý."],
+    ["启用用户脚本：自动加载内置目录和用户配置目录中的 .js 文件。", "Enable user scripts: automatically loads .js files from built-in and user config directories.", "Bật script người dùng: tự tải file .js từ thư mục tích hợp và thư mục cấu hình người dùng."],
+    ["禁用后需重载页面或重启 Codex++ 才能完全移除已执行效果。", "After disabling, reload the page or restart Codex++ to fully remove already executed effects.", "Sau khi tắt, cần tải lại trang hoặc khởi động lại Codex++ để xóa hoàn toàn hiệu ứng đã chạy."],
+    ["正在读取脚本目录…", "Reading script folders...", "Đang đọc thư mục script..."],
+    ["正在读取用户脚本…", "Reading user scripts...", "Đang đọc script người dùng..."],
+    ["重新加载用户脚本", "Reload user scripts", "Tải lại script người dùng"],
+    ["推荐内容分为赞助商推荐和普通推荐。赞助商推荐来自支持 Codex++ 继续维护的合作方；普通推荐用于展示适合 Codex 用户的服务与信息。", "Recommendations include sponsor and regular items. Sponsor recommendations come from partners supporting Codex++ maintenance; regular recommendations show services and information useful to Codex users.", "Đề xuất gồm mục tài trợ và thông thường. Mục tài trợ đến từ đối tác hỗ trợ duy trì Codex++; mục thường hiển thị dịch vụ và thông tin phù hợp cho người dùng Codex."],
+    ["如果 Codex++ 帮到了你，可以请我喝杯咖啡，或者随手赞赏支持一下继续维护。", "If Codex++ helps you, you can buy the author a coffee or support ongoing maintenance.", "Nếu Codex++ giúp ích cho bạn, bạn có thể mời tác giả một ly cà phê hoặc ủng hộ việc duy trì."],
+    ["支付宝", "Alipay", "Alipay"],
+    ["微信", "WeChat", "WeChat"],
+    ["取消", "Cancel", "Hủy"],
+    ["删除", "Delete", "Xóa"],
+    ["撤销", "Undo", "Hoàn tác"],
+    ["撤销完成", "Undo complete", "Đã hoàn tác"],
+    ["删除会话", "Delete session", "Xóa phiên"],
+    ["读取默认值", "Load defaults", "Đọc mặc định"],
+    ["Create upstream worktree", "Create upstream worktree", "Tạo upstream worktree"],
+    ["Create from upstream", "Create from upstream", "Tạo từ upstream"],
+    ["等价于 git worktree add -b branch path upstream/base。创建前会先 fetch 远端分支。", "Equivalent to git worktree add -b branch path upstream/base. The remote branch is fetched before creation.", "Tương đương git worktree add -b branch path upstream/base. Nhánh remote sẽ được fetch trước khi tạo."],
+    ["仓库路径", "Repository path", "Đường dẫn repository"],
+    ["新分支名", "New branch name", "Tên nhánh mới"],
+    ["Worktree 路径", "Worktree path", "Đường dẫn worktree"],
+    ["填写仓库路径后会自动读取 remote 和当前分支。", "After entering the repository path, remote and current branch are read automatically.", "Sau khi nhập đường dẫn repository, remote và nhánh hiện tại sẽ được đọc tự động."],
+    ["管理工具已打开", "Manager opened", "Đã mở trình quản lý"],
+    ["打开管理工具失败", "Failed to open manager", "Không mở được trình quản lý"],
+    ["后端已连接", "Backend connected", "Backend đã kết nối"],
+    ["未连接", "Disconnected", "Chưa kết nối"],
+    ["正在检查后端", "Checking backend", "Đang kiểm tra backend"],
+    ["后端检查超时", "Backend check timed out", "Kiểm tra backend quá thời gian"],
+    ["正在修复后端…", "Repairing backend...", "Đang sửa backend..."],
+    ["后端修复失败", "Backend repair failed", "Sửa backend thất bại"],
+    ["未找到", "Not found", "Không tìm thấy"],
+    ["未发现用户脚本。", "No user scripts found.", "Không tìm thấy script người dùng."],
+    ["已加载", "Loaded", "Đã tải"],
+    ["失败", "Failed", "Thất bại"],
+    ["已禁用", "Disabled", "Đã tắt"],
+    ["未加载", "Not loaded", "Chưa tải"],
+    ["加载中", "Loading", "Đang tải"],
+  ];
+
+  const codexPlusI18nMaps = (() => {
+    const maps = { en: new Map(), vi: new Map() };
+    codexPlusI18nEntries.forEach(([zh, en, vi]) => {
+      [zh, en, vi].forEach((source) => {
+        maps.en.set(source, en);
+        maps.vi.set(source, vi);
+      });
+    });
+    return maps;
+  })();
+
+  function normalizeCodexPlusLanguage(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (normalized === "vi" || normalized === "vi-vn") return "vi";
+    if (normalized === "en" || normalized === "en-us" || normalized === "en-gb") return "en";
+    return "en";
+  }
+
+  function codexPlusLanguage() {
+    return normalizeCodexPlusLanguage(codexPlusBackendSettings.language || localStorage.getItem("codex-plus-language") || navigator.language);
+  }
+
+  function codexPlusTranslateText(text, language = codexPlusLanguage()) {
+    const value = String(text || "");
+    const trimmed = value.trim();
+    if (!trimmed) return value;
+    const translated = codexPlusI18nMaps[language].get(trimmed) || codexPlusTranslatePattern(trimmed, language);
+    return translated && translated !== trimmed ? value.replace(trimmed, translated) : value;
+  }
+
+  function codexPlusTranslatePattern(text, language) {
+    const deleteMessage = /^删除[“\"](.+)[”\"]？$/.exec(text);
+    if (deleteMessage) return language === "vi" ? `Xóa “${deleteMessage[1]}”?` : `Delete “${deleteMessage[1]}”?`;
+    const builtInUser = /^内置：(.+)\s+用户：(.+)$/.exec(text);
+    if (builtInUser) return language === "vi" ? `Tích hợp: ${builtInUser[1]}  Người dùng: ${builtInUser[2]}` : `Built-in: ${builtInUser[1]}  User: ${builtInUser[2]}`;
+    return null;
+  }
+
+  function translateCodexPlusElement(root) {
+    const language = codexPlusLanguage();
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || parent.closest("script, style, code, pre, textarea, input")) return NodeFilter.FILTER_REJECT;
+        return node.textContent?.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      },
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const next = codexPlusTranslateText(node.textContent, language);
+      if (next !== node.textContent) node.textContent = next;
+    });
+    const elements = [root, ...Array.from(root.querySelectorAll?.("[title], [aria-label], [alt], [placeholder]") || [])].filter((node) => node instanceof Element);
+    elements.forEach((element) => {
+      ["title", "aria-label", "alt", "placeholder"].forEach((attr) => {
+        const value = element.getAttribute(attr);
+        if (!value) return;
+        const next = codexPlusTranslateText(value, language);
+        if (next !== value) element.setAttribute(attr, next);
+      });
+    });
+  }
+
+  function translateCodexPlusRoots() {
+    document.querySelectorAll(".codex-plus-modal-overlay, .codex-delete-toast, .codex-delete-confirm-overlay").forEach(translateCodexPlusElement);
+  }
   const codexPluginLegacyEntryUnlockBeforeVersion = "26.601.2237";
 
   function parseCodexVersionParts(version) {
@@ -1648,6 +1823,7 @@
       codexPlusBackendSettings = { ...codexPlusBackendSettings, ...settings };
       codexPlusBackendSettingsLoaded = true;
       refreshCodexPlusBackendToggles();
+      translateCodexPlusRoots();
       return true;
     } catch (_) {
       refreshCodexPlusBackendToggles();
@@ -1673,6 +1849,7 @@
     try {
       const settings = await postJson("/settings/set", { [key]: value });
       codexPlusBackendSettings = { ...codexPlusBackendSettings, ...settings };
+      translateCodexPlusRoots();
     } finally {
       refreshCodexPlusBackendToggles();
     }
@@ -1719,15 +1896,16 @@
     const label = document.querySelector("[data-codex-backend-status]");
     if (label) {
       label.dataset.status = status;
-      label.textContent = codexPlusBackendStatus.message || (status === "ok" ? "后端已连接" : "未连接");
+      label.textContent = codexPlusTranslateText(codexPlusBackendStatus.message || (status === "ok" ? "后端已连接" : "未连接"));
     }
     document.querySelectorAll("[data-codex-backend-indicator]").forEach((indicator) => {
       indicator.dataset.status = status;
-      indicator.title = status === "ok" ? "后端已连接" : status === "checking" ? "正在检查后端" : "未连接";
+      indicator.title = codexPlusTranslateText(status === "ok" ? "后端已连接" : status === "checking" ? "正在检查后端" : "未连接");
     });
     const repair = document.querySelector("[data-codex-backend-repair]");
     if (repair) repair.hidden = status === "ok" || status === "checking";
     refreshCodexServiceTierControls();
+    translateCodexPlusRoots();
   }
 
   function withBackendTimeout(request) {
@@ -1779,30 +1957,31 @@
   }
 
   function userScriptStatusLabel(status) {
-    return { loaded: "已加载", failed: "失败", disabled: "已禁用", not_loaded: "未加载", loading: "加载中" }[status] || status || "未知";
+    return codexPlusTranslateText({ loaded: "已加载", failed: "失败", disabled: "已禁用", not_loaded: "未加载", loading: "加载中" }[status] || status || "未知");
   }
 
   function renderUserScripts() {
     const enabledToggle = document.querySelector("[data-codex-user-scripts-enabled]");
     if (enabledToggle) enabledToggle.dataset.enabled = String(!!codexPlusUserScripts.enabled);
     const dirs = document.querySelector("[data-codex-user-script-dirs]");
-    if (dirs) dirs.textContent = `内置：${codexPlusUserScripts.builtin_dir || "未找到"}  用户：${codexPlusUserScripts.user_dir || "未找到"}`;
+    if (dirs) dirs.textContent = codexPlusTranslateText(`内置：${codexPlusUserScripts.builtin_dir || "未找到"}  用户：${codexPlusUserScripts.user_dir || "未找到"}`);
     const list = document.querySelector("[data-codex-user-script-list]");
     if (!list) return;
     if (!codexPlusUserScripts.scripts?.length) {
-      list.textContent = "未发现用户脚本。";
+      list.textContent = codexPlusTranslateText("未发现用户脚本。");
       return;
     }
     list.innerHTML = codexPlusUserScripts.scripts.map((script) => `
       <div class="codex-plus-user-script-item">
         <div>
           <div class="codex-plus-user-script-name">${escapeHtml(script.name || script.key)}</div>
-          <div class="codex-plus-user-script-meta">${script.source === "builtin" ? "内置" : "用户"} · ${userScriptStatusLabel(script.status)}</div>
+          <div class="codex-plus-user-script-meta">${script.source === "builtin" ? codexPlusTranslateText("内置") : codexPlusTranslateText("用户")} · ${userScriptStatusLabel(script.status)}</div>
           ${script.error ? `<div class="codex-plus-user-script-error">${escapeHtml(script.error)}</div>` : ""}
         </div>
         <button type="button" class="codex-plus-toggle" data-codex-user-script-key="${escapeHtml(script.key)}" data-enabled="${String(!!script.enabled)}"><span></span></button>
       </div>
     `).join("");
+    translateCodexPlusElement(list);
   }
 
   async function loadUserScripts(path = "/user-scripts/list", payload = {}) {
@@ -1949,6 +2128,13 @@
               <div class="codex-plus-backend-status">
                 <div class="codex-plus-backend-label" data-codex-backend-status="true" data-status="checking">正在检查后端…</div>
                 <button type="button" class="codex-plus-backend-repair" data-codex-backend-repair="true" hidden>修复后端运行</button>
+              </div>
+            </div>
+            <div class="codex-plus-row">
+              <div><div class="codex-plus-row-title">界面语言</div><div class="codex-plus-row-description">选择 Codex++ 管理工具和注入菜单使用的语言。</div></div>
+              <div class="codex-plus-language-actions" role="group" aria-label="界面语言">
+                <button type="button" class="codex-plus-language-button" data-codex-plus-language="en" data-active="${codexPlusLanguage() === "en"}">English</button>
+                <button type="button" class="codex-plus-language-button" data-codex-plus-language="vi" data-active="${codexPlusLanguage() === "vi"}">Tiếng Việt</button>
               </div>
             </div>
             <div class="codex-plus-row">
@@ -2151,6 +2337,18 @@
         repairBackend();
         return;
       }
+      const languageButton = target?.closest("[data-codex-plus-language]");
+      if (languageButton) {
+        const language = normalizeCodexPlusLanguage(languageButton.getAttribute("data-codex-plus-language"));
+        codexPlusBackendSettings = { ...codexPlusBackendSettings, language };
+        localStorage.setItem("codex-plus-language", language);
+        document.querySelectorAll("[data-codex-plus-language]").forEach((button) => {
+          button.dataset.active = String(button.getAttribute("data-codex-plus-language") === language);
+        });
+        setBackendSetting("language", language);
+        translateCodexPlusRoots();
+        return;
+      }
       const issueButton = target?.closest("[data-codex-plus-issue]");
       if (issueButton) {
         const issueUrl = "https://github.com/BigPizzaV3/CodexPlusPlus/issues";
@@ -2221,6 +2419,7 @@
         return;
       }
     }, true);
+    translateCodexPlusElement(overlay);
     document.body.appendChild(overlay);
     if (!codexPlusAdsLoaded) fetchCodexPlusAds();
     selectCodexPlusTab("home");
@@ -2229,6 +2428,7 @@
     renderBackendStatus();
     void loadCodexServiceTierState();
     loadUserScripts();
+    translateCodexPlusElement(overlay);
   }
 
   function findNativeMenuInsertionPoint() {
@@ -4913,18 +5113,19 @@
     document.querySelectorAll(".codex-delete-toast").forEach((node) => node.remove());
     const toast = document.createElement("div");
     toast.className = "codex-delete-toast";
-    toast.textContent = message;
+    toast.textContent = codexPlusTranslateText(message);
     if (undoToken) {
       const undo = document.createElement("button");
-      undo.textContent = "撤销";
+      undo.textContent = codexPlusTranslateText("撤销");
       undo.addEventListener("click", async () => {
         const result = await postJson("/undo", { undo_token: undoToken });
-        toast.textContent = result.message || "撤销完成";
+        toast.textContent = codexPlusTranslateText(result.message || "撤销完成");
         setTimeout(() => toast.remove(), 5000);
       });
       toast.appendChild(undo);
     }
     document.body.appendChild(toast);
+    translateCodexPlusElement(toast);
     setTimeout(() => toast.remove(), 10000);
   }
 
@@ -5805,6 +6006,7 @@
       }
     }, true);
     upstreamWorktreeField(overlay, "repoPath")?.addEventListener("change", () => loadUpstreamWorktreeDefaults(overlay));
+    translateCodexPlusElement(overlay);
     document.body.appendChild(overlay);
     upstreamWorktreeField(overlay, "repoPath")?.focus();
   }
@@ -5852,6 +6054,7 @@
       overlay.addEventListener("keydown", (event) => {
         if (event.key === "Escape") finish(false, event);
       }, true);
+      translateCodexPlusElement(overlay);
       document.body.appendChild(overlay);
       overlay.querySelector("[data-codex-delete-cancel]")?.focus();
     });

@@ -57,6 +57,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { applyTranslations, languageOptions, loadInitialLanguage, normalizeLanguage, type AppLanguage } from "@/i18n";
 
 type Status = "ok" | "failed" | "not_implemented" | "not_checked" | string;
 
@@ -92,6 +93,7 @@ type OverviewResult = CommandResult<{
 }>;
 
 type BackendSettings = {
+  language: AppLanguage;
   codexAppPath: string;
   codexExtraArgs: string[];
   providerSyncEnabled: boolean;
@@ -470,6 +472,7 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon }> = [
 ];
 
 const defaultSettings: BackendSettings = {
+  language: loadInitialLanguage(),
   codexAppPath: "",
   codexExtraArgs: [],
   providerSyncEnabled: false,
@@ -533,6 +536,7 @@ const defaultSettings: BackendSettings = {
 
 export function App() {
   const [theme, setTheme] = useState<Theme>(() => loadInitialTheme());
+  const [language, setLanguage] = useState<AppLanguage>(() => loadInitialLanguage());
   const [route, setRoute] = useState<Route>(() => loadInitialRoute());
   const [notice, setNotice] = useState<{ title: string; message: string; status?: Status } | null>(null);
   const [overview, setOverview] = useState<OverviewResult | null>(null);
@@ -592,6 +596,7 @@ export function App() {
       setSettings(result);
       const normalized = normalizeSettings(result.settings);
       setSettingsForm(normalized);
+      setLanguage(normalized.language);
       setLaunchForm((current) => ({
         ...current,
         appPath: current.appPath || result.settings.codexAppPath || "",
@@ -879,6 +884,20 @@ export function App() {
       setSettings(result);
       setSettingsForm(normalizeSettings(result.settings));
       if (!silent || !isSuccessStatus(result.status)) showNotice("设置保存", result.message, result.status);
+    }
+  };
+
+  const setLanguagePreference = async (nextLanguage: AppLanguage) => {
+    const normalizedLanguage = normalizeLanguage(nextLanguage);
+    setLanguage(normalizedLanguage);
+    window.localStorage.setItem("codex-plus-language", normalizedLanguage);
+    const next = { ...settingsForm, language: normalizedLanguage };
+    setSettingsForm(next);
+    const result = await run(() => call<SettingsResult>("save_settings", { settings: next }));
+    if (result) {
+      setSettings(result);
+      setSettingsForm(normalizeSettings(result.settings));
+      showNotice("语言设置", "语言已更新。", result.status);
     }
   };
 
@@ -1343,6 +1362,12 @@ export function App() {
     window.localStorage.setItem("codex-plus-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    document.documentElement.lang = language === "vi" ? "vi" : "en";
+    window.localStorage.setItem("codex-plus-language", language);
+    applyTranslations(language);
+  });
+
   const saveCodexAppPath = async (appPath: string) => {
     const next = { ...settingsForm, codexAppPath: appPath };
     const result = await run(() => call<SettingsResult>("save_settings", { settings: next }));
@@ -1456,6 +1481,7 @@ export function App() {
       switchPureApiMode,
       refreshLogs,
       refreshDiagnostics,
+      setLanguage: setLanguagePreference,
       showMessage: async (title: string, message: string, status?: Status) => showNotice(title, message, status),
       copyLogs: () => copyText(logs?.text ?? "", "日志已复制。"),
       copyDiagnostics: () => copyText(diagnostics?.report ?? "", "诊断报告已复制。"),
@@ -1472,7 +1498,7 @@ export function App() {
       disableWatcher: () => watcherAction("disable_watcher"),
       toggleTheme: () => setTheme((current) => (current === "dark" ? "light" : "dark")),
     }),
-    [route, launchForm, settingsForm, settings, removeOwnedData, update, logs, diagnostics, theme, relayFiles, localSessions, selectedProviderSyncTarget],
+    [route, launchForm, settingsForm, settings, removeOwnedData, update, logs, diagnostics, theme, language, relayFiles, localSessions, selectedProviderSyncTarget],
   );
   const hasUpdate = update?.updateAvailable === true;
 
@@ -1601,7 +1627,7 @@ export function App() {
           ) : null}
           {route === "about" ? <AboutScreen overview={overview} update={update} logs={logs} diagnostics={diagnostics} actions={actions} /> : null}
           {route === "settings" ? (
-            <SettingsScreen settings={settings} theme={theme} form={settingsForm} onFormChange={setSettingsForm} actions={actions} />
+            <SettingsScreen settings={settings} theme={theme} language={language} form={settingsForm} onFormChange={setSettingsForm} actions={actions} />
           ) : null}
         </section>
       </main>
@@ -1669,6 +1695,7 @@ type Actions = {
   switchPureApiMode: () => Promise<void>;
   refreshLogs: () => Promise<void>;
   refreshDiagnostics: () => Promise<void>;
+  setLanguage: (language: AppLanguage) => Promise<void>;
   showMessage: (title: string, message: string, status?: Status) => Promise<void>;
   copyLogs: () => Promise<void>;
   copyDiagnostics: () => Promise<void>;
@@ -2354,12 +2381,14 @@ function AboutScreen({
 function SettingsScreen({
   settings,
   theme,
+  language,
   form,
   onFormChange,
   actions,
 }: {
   settings: SettingsResult | null;
   theme: Theme;
+  language: AppLanguage;
   form: BackendSettings;
   onFormChange: (value: BackendSettings) => void;
   actions: Actions;
@@ -2375,6 +2404,25 @@ function SettingsScreen({
               <span>当前为{theme === "dark" ? "深色" : "浅色"}模式。</span>
             </div>
             <Button variant="secondary" onClick={actions.toggleTheme}>切换主题</Button>
+          </div>
+          <div className="theme-row">
+            <div>
+              <strong>界面语言</strong>
+              <span>选择 Codex++ 管理工具和注入菜单使用的语言。</span>
+            </div>
+            <div className="language-segmented" role="group" aria-label="界面语言">
+              {languageOptions.map((option) => (
+                <Button
+                  key={option.id}
+                  onClick={() => void actions.setLanguage(option.id)}
+                  size="sm"
+                  type="button"
+                  variant={language === option.id ? "default" : "secondary"}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
           </div>
           <Field label="供应商测试模型">
             <Input
@@ -4333,6 +4381,7 @@ function normalizeSettings(settings: BackendSettings): BackendSettings {
   return syncLegacyRelayFields({
     ...defaultSettings,
     ...settings,
+    language: normalizeLanguage(settings.language || defaultSettings.language),
     relayProfilesEnabled: settings.relayProfilesEnabled !== false,
     ccsLinkEnabled: settings.ccsLinkEnabled === true,
     relayCommonConfigContents,
