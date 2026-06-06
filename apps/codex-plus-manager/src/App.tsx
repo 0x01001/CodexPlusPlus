@@ -57,7 +57,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { applyTranslations, languageOptions, loadInitialLanguage, normalizeLanguage, type AppLanguage } from "@/i18n";
+import { applyTranslations, languageOptions, loadInitialLanguage, normalizeLanguage, translateText, type AppLanguage } from "@/i18n";
 
 type Status = "ok" | "failed" | "not_implemented" | "not_checked" | string;
 
@@ -637,7 +637,7 @@ export function App() {
   const deleteUserScript = async (key: string) => {
     const script = settings?.user_scripts?.scripts?.find((item) => item.key === key);
     const name = script?.name || key;
-    if (!window.confirm(`删除脚本“${name}”？此操作会移除本地脚本文件。`)) return;
+    if (!window.confirm(translateText(language, `删除脚本“${name}”？此操作会移除本地脚本文件。`))) return;
     const result = await run(() => call<SettingsResult>("delete_user_script", { key }));
     if (result) {
       setSettings(result);
@@ -674,7 +674,7 @@ export function App() {
 
   const deleteLocalSession = async (session: LocalSession) => {
     const title = session.title || session.id;
-    if (!window.confirm(`删除会话“${title}”？此操作会删除本地数据库记录和 rollout 文件，并创建备份。`)) return;
+    if (!window.confirm(translateText(language, `删除会话“${title}”？此操作会删除本地数据库记录和 rollout 文件，并创建备份。`))) return;
     const result = await run(() =>
       call<DeleteLocalSessionResult>("delete_local_session", {
         request: { sessionId: session.id, title: session.title },
@@ -1328,7 +1328,7 @@ export function App() {
   };
 
   const showNotice = (title: string, message: string, status?: Status) => {
-    setNotice({ title, message, status });
+    setNotice({ title: translateText(language, title), message: translateText(language, message), status });
   };
 
   const showResultNotice = (
@@ -1401,12 +1401,12 @@ export function App() {
         try {
           selected = await open(
             mode === "folder"
-              ? { directory: true, multiple: false, title: "选择 Codex 应用目录" }
+              ? { directory: true, multiple: false, title: translateText(language, "选择 Codex 应用目录") }
               : {
                   directory: false,
                   multiple: false,
-                  title: "选择 Codex.exe 或 Codex.app",
-                  filters: [{ name: "Codex 应用", extensions: ["exe", "app"] }],
+                  title: translateText(language, "选择 Codex.exe 或 Codex.app"),
+                  filters: [{ name: translateText(language, "Codex 应用"), extensions: ["exe", "app"] }],
                 },
           );
         } catch (error) {
@@ -1601,6 +1601,7 @@ export function App() {
           ) : null}
           {route === "context" ? (
             <ContextScreen
+              language={language}
               form={settingsForm}
               liveEntries={liveContextEntries}
               relayFiles={relayFiles}
@@ -1625,7 +1626,7 @@ export function App() {
               actions={actions}
             />
           ) : null}
-          {route === "about" ? <AboutScreen overview={overview} update={update} logs={logs} diagnostics={diagnostics} actions={actions} /> : null}
+          {route === "about" ? <AboutScreen language={language} overview={overview} update={update} logs={logs} diagnostics={diagnostics} actions={actions} /> : null}
           {route === "settings" ? (
             <SettingsScreen settings={settings} theme={theme} language={language} form={settingsForm} onFormChange={setSettingsForm} actions={actions} />
           ) : null}
@@ -2314,12 +2315,14 @@ function MaintenanceScreen({
 }
 
 function AboutScreen({
+  language,
   overview,
   update,
   logs,
   diagnostics,
   actions,
 }: {
+  language: AppLanguage;
   overview: OverviewResult | null;
   update: UpdateResult | null;
   logs: LogsResult | null;
@@ -2365,7 +2368,7 @@ function AboutScreen({
             <Metric label="资源" value={update?.assetName ?? "-"} />
             <Metric label="进度" value={`${update?.progress ?? 0}%`} />
           </div>
-          <Textarea className="log-view" readOnly value={update?.releaseSummary || update?.message || "尚未检查 GitHub Release；更新会下载并启动安装包。"} />
+          <Textarea className="log-view" readOnly value={translateText(language, update?.releaseSummary || update?.message || "尚未检查 GitHub Release；更新会下载并启动安装包。")} />
           <Toolbar>
             <Button onClick={() => void actions.checkUpdate()}>检查更新</Button>
             <Button variant="secondary" onClick={() => void actions.performUpdate()}>下载并运行安装包</Button>
@@ -2373,7 +2376,7 @@ function AboutScreen({
         </CardContent>
       </Panel>
       <LogsPanel logs={logs} actions={actions} />
-      <DiagnosticsPanel diagnostics={diagnostics} actions={actions} />
+      <DiagnosticsPanel language={language} diagnostics={diagnostics} actions={actions} />
     </>
   );
 }
@@ -2524,12 +2527,12 @@ function LogsPanel({ logs, actions }: { logs: LogsResult | null; actions: Action
   );
 }
 
-function DiagnosticsPanel({ diagnostics, actions }: { diagnostics: DiagnosticsResult | null; actions: Actions }) {
+function DiagnosticsPanel({ language, diagnostics, actions }: { language: AppLanguage; diagnostics: DiagnosticsResult | null; actions: Actions }) {
   return (
     <Panel>
       <CardHead title="诊断报告" detail="包含版本、路径、设置和平台信息" />
       <CardContent>
-        <Textarea className="log-view tall" readOnly value={diagnostics?.report ?? "尚未生成诊断报告。"} />
+        <Textarea className="log-view tall" readOnly value={translateText(language, diagnostics?.report ?? "尚未生成诊断报告。")} />
         <Toolbar>
           <Button onClick={() => void actions.refreshDiagnostics()}>重新生成</Button>
           <Button variant="secondary" onClick={() => void actions.copyDiagnostics()}>
@@ -2838,12 +2841,14 @@ function RelayProfileDetail({
 }
 
 function ContextScreen({
+  language,
   form,
   liveEntries,
   relayFiles,
   onFormChange,
   actions,
 }: {
+  language: AppLanguage;
   form: BackendSettings;
   liveEntries: CodexContextEntries | null;
   relayFiles: RelayFilesResult | null;
@@ -2852,9 +2857,10 @@ function ContextScreen({
 }) {
   return (
     <Panel fill>
-      <CardHead title="Codex 工具与插件" detail="独立管理 Codex 的 MCP、Skills、Plugins；切换任意供应商都会带上。" />
+      <CardHead title={translateText(language, "Codex 工具与插件")} detail={translateText(language, "独立管理 Codex 的 MCP、Skills、Plugins；切换任意供应商都会带上。")} />
       <CardContent>
         <RelayContextManager
+          language={language}
           form={normalizeSettings(form)}
           liveEntries={liveEntries}
           relayFiles={relayFiles}
@@ -3089,12 +3095,14 @@ function RelayProfileEditor({
 }
 
 function RelayContextManager({
+  language,
   form,
   liveEntries,
   relayFiles,
   onFormChange,
   actions,
 }: {
+  language: AppLanguage;
   form: BackendSettings;
   liveEntries: CodexContextEntries | null;
   relayFiles: RelayFilesResult | null;
@@ -3105,7 +3113,7 @@ function RelayContextManager({
   const [activeKind, setActiveKind] = useState<ContextKind>("mcp");
   const [editor, setEditor] = useState<{ kind: ContextKind; entry?: CodexContextEntry } | null>(null);
   const visibleEntries = contextEntriesByKind(entries, activeKind);
-  const label = contextKindLabel(activeKind);
+  const label = contextKindLabel(activeKind, language);
 
   const saveEntry = async (kind: ContextKind, id: string, tomlBody: string) => {
     const next = await actions.upsertContextEntry(form, kind, id, tomlBody);
@@ -3135,13 +3143,13 @@ function RelayContextManager({
     <div className="relay-context-panel">
       <div className="relay-context-head">
         <div>
-          <strong>Codex 工具与插件</strong>
-          <span>MCP、Skills、Plugins 作为全局配置独立管理，切换任意供应商都会合并。</span>
+          <strong>{translateText(language, "Codex 工具与插件")}</strong>
+          <span>{translateText(language, "MCP、Skills、Plugins 作为全局配置独立管理，切换任意供应商都会合并。")}</span>
         </div>
         <div className="relay-context-head-actions">
           <Button onClick={() => setEditor({ kind: activeKind })} size="sm" variant="secondary">
             <Plus className="h-4 w-4" />
-            新增{label}
+            {contextAddLabel(language, label)}
           </Button>
         </div>
       </div>
@@ -3153,13 +3161,13 @@ function RelayContextManager({
             onClick={() => setActiveKind(option.kind)}
             type="button"
           >
-            <span>{option.label}</span>
+            <span>{contextKindLabel(option.kind, language)}</span>
             <small>{contextEntriesByKind(entries, option.kind).length}</small>
           </button>
         ))}
       </div>
       <div className="relay-context-summary">
-        当前共有 {visibleEntries.length} 个{label}；这些条目独立于供应商保存，会写入所有供应商切换后的 config.toml。
+        {contextSummaryLabel(language, visibleEntries.length, label)}
       </div>
       <div className="relay-context-list">
         {visibleEntries.length ? (
@@ -3173,21 +3181,21 @@ function RelayContextManager({
                   className={`context-enabled-switch ${entry.enabled ? "active" : ""}`}
                   onClick={() => void toggleContextEntryEnabled(entry)}
                   role="switch"
-                  title={entry.enabled ? "禁用此扩展项" : "启用此扩展项"}
+                  title={translateText(language, entry.enabled ? "禁用此扩展项" : "启用此扩展项")}
                   type="button"
                 >
                   <span className="context-switch-track" aria-hidden="true">
                     <span className="context-switch-thumb" />
                   </span>
                 </button>
-                <Button onClick={() => setEditor({ kind: entry.kind, entry })} size="icon" title="编辑扩展项" variant="ghost">
+                <Button onClick={() => setEditor({ kind: entry.kind, entry })} size="icon" title={translateText(language, "编辑扩展项")} variant="ghost">
                   <Edit3 className="h-4 w-4" />
                 </Button>
                 <Button
                   className="relay-context-delete"
                   onClick={() => void deleteEntry(entry)}
                   size="icon"
-                  title="删除扩展项"
+                  title={translateText(language, "删除扩展项")}
                   variant="ghost"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -3196,11 +3204,12 @@ function RelayContextManager({
             </div>
           ))
         ) : (
-          <div className="empty">暂无{label}，可以从通用配置文件或这里新增。</div>
+          <div className="empty">{contextEmptyLabel(language, label)}</div>
         )}
       </div>
       {editor ? (
         <ContextEntryEditor
+          language={language}
           entry={editor.entry}
           kind={editor.kind}
           onCancel={() => setEditor(null)}
@@ -3212,11 +3221,13 @@ function RelayContextManager({
 }
 
 function ContextEntryEditor({
+  language,
   kind,
   entry,
   onCancel,
   onSave,
 }: {
+  language: AppLanguage;
   kind: ContextKind;
   entry?: CodexContextEntry;
   onCancel: () => void;
@@ -3230,7 +3241,7 @@ function ContextEntryEditor({
   return (
     <div className="context-editor">
       <div className="context-editor-fields">
-        <Field label="类型">
+        <Field label={translateText(language, "类型")}>
           <select
             className="field-select"
             disabled={!!entry}
@@ -3238,7 +3249,7 @@ function ContextEntryEditor({
             onChange={(event) => setDraftKind(event.currentTarget.value as ContextKind)}
           >
             {contextKindOptions.map((option) => (
-              <option key={option.kind} value={option.kind}>{option.label}</option>
+              <option key={option.kind} value={option.kind}>{contextKindLabel(option.kind, language)}</option>
             ))}
           </select>
         </Field>
@@ -3247,25 +3258,25 @@ function ContextEntryEditor({
             disabled={!!entry}
             value={id}
             onChange={(event) => setId(event.currentTarget.value.trim())}
-            placeholder="例如 context7"
+            placeholder={translateText(language, "例如 context7")}
           />
         </Field>
       </div>
-      <Field label="TOML 配置体">
+      <Field label={translateText(language, "TOML 配置体")}>
         <Textarea
           className="context-editor-textarea"
           value={tomlBody}
           onChange={(event) => setTomlBody(event.currentTarget.value)}
-          placeholder={'只填写表头下面的内容，例如：\ncommand = "npx"\nargs = ["-y", "@upstash/context7-mcp"]'}
+          placeholder={translateText(language, '只填写表头下面的内容，例如：\ncommand = "npx"\nargs = ["-y", "@upstash/context7-mcp"]')}
           spellCheck={false}
         />
       </Field>
       <Toolbar>
         <Button disabled={!canSave} onClick={() => onSave(draftKind, id.trim(), tomlBody)} size="sm">
           <Save className="h-4 w-4" />
-          保存扩展项
+          {translateText(language, "保存扩展项")}
         </Button>
-        <Button onClick={onCancel} size="sm" variant="secondary">取消</Button>
+        <Button onClick={onCancel} size="sm" variant="secondary">{translateText(language, "取消")}</Button>
       </Toolbar>
     </div>
   );
@@ -3675,8 +3686,27 @@ const contextKindOptions: Array<{ kind: ContextKind; label: string; tableName: s
   { kind: "plugin", label: "插件", tableName: "plugins" },
 ];
 
-function contextKindLabel(kind: ContextKind) {
-  return contextKindOptions.find((option) => option.kind === kind)?.label ?? "扩展项";
+function contextKindLabel(kind: ContextKind, language?: AppLanguage) {
+  const label = contextKindOptions.find((option) => option.kind === kind)?.label ?? "扩展项";
+  return language ? translateText(language, label) : label;
+}
+
+function contextAddLabel(language: AppLanguage, label: string) {
+  return language === "vi" ? `Thêm ${label}` : `Add ${label}`;
+}
+
+function contextSummaryLabel(language: AppLanguage, count: number, label: string) {
+  if (language === "vi") {
+    return `Hiện có ${count} mục ${label}. Các mục này được lưu riêng với provider và sẽ được ghi vào config.toml khi chuyển provider.`;
+  }
+  const entryWord = count === 1 ? "entry" : "entries";
+  return `There ${count === 1 ? "is" : "are"} ${count} ${label} ${entryWord}. These entries are saved independently from providers and written into config.toml after any provider switch.`;
+}
+
+function contextEmptyLabel(language: AppLanguage, label: string) {
+  return language === "vi"
+    ? `Chưa có mục ${label}. Bạn có thể thêm từ file cấu hình chung hoặc tại đây.`
+    : `No ${label} entries yet. Add one from the common config file or here.`;
 }
 
 function contextEntriesFromSettings(settings: BackendSettings): CodexContextEntries {

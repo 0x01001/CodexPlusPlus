@@ -1125,13 +1125,86 @@
     ["后端检查超时", "Backend check timed out", "Kiểm tra backend quá thời gian"],
     ["正在修复后端…", "Repairing backend...", "Đang sửa backend..."],
     ["后端修复失败", "Backend repair failed", "Sửa backend thất bại"],
+    ["Codex setting-storage 接口不可用", "Codex setting-storage API is unavailable", "API setting-storage của Codex không khả dụng"],
+    ["Upstream worktree enhancement is disabled", "Upstream worktree enhancement is disabled", "Tăng cường upstream worktree đang tắt"],
     ["未找到", "Not found", "Không tìm thấy"],
+    ["未知", "Unknown", "Không rõ"],
     ["未发现用户脚本。", "No user scripts found.", "Không tìm thấy script người dùng."],
     ["已加载", "Loaded", "Đã tải"],
     ["失败", "Failed", "Thất bại"],
     ["已禁用", "Disabled", "Đã tắt"],
     ["未加载", "Not loaded", "Chưa tải"],
     ["加载中", "Loading", "Đang tải"],
+    ["Fast 已开启", "Fast enabled", "Đã bật Fast"],
+    ["默认服务模式", "Default service mode", "Chế độ dịch vụ mặc định"],
+    ["读取失败", "Read failed", "Đọc thất bại"],
+    ["未启用", "Not enabled", "Chưa bật"],
+    ["未读取", "Not read", "Chưa đọc"],
+    ["后端未连接，无法切换服务模式", "Backend is disconnected; service mode cannot be switched", "Backend chưa kết nối, không thể đổi chế độ dịch vụ"],
+    ["继承 config.toml", "Inherit config.toml", "Kế thừa config.toml"],
+    ["当前 thread", "Current thread", "Thread hiện tại"],
+    ["新 thread 草稿", "New thread draft", "Bản nháp thread mới"],
+    ["服务模式：正在检查后端连接", "Service mode: checking backend connection", "Chế độ dịch vụ: đang kiểm tra kết nối backend"],
+    ["服务模式：后端未连接，无法切换", "Service mode: backend disconnected, cannot switch", "Chế độ dịch vụ: backend chưa kết nối, không thể đổi"],
+    ["服务模式：正在读取", "Service mode: loading", "Chế độ dịch vụ: đang đọc"],
+    ["服务模式：读取失败", "Service mode: read failed", "Chế độ dịch vụ: đọc thất bại"],
+    ["Standard：使用标准处理；不在请求上设置 priority。", "Standard: uses standard processing and does not set priority on requests.", "Standard: dùng xử lý tiêu chuẩn và không đặt priority trên request."],
+    ["Fast：对请求使用 service_tier=\"priority\"，官方说明其延迟更低且更一致，但会按更高价格计费；rate limit 与 Standard 共享，流量快速上涨时可能回落到 Standard。", "Fast: uses service_tier=\"priority\" for requests. Official docs say latency is lower and more consistent, but billing is higher; rate limits are shared with Standard and may fall back to Standard during traffic spikes.", "Fast: dùng service_tier=\"priority\" cho request. Tài liệu chính thức nói độ trễ thấp và ổn định hơn nhưng chi phí cao hơn; rate limit dùng chung với Standard và có thể rơi về Standard khi lưu lượng tăng nhanh."],
+    ["当前 thread 不单独覆盖，继承 config.toml", "Current thread does not override; inherits config.toml", "Thread hiện tại không override riêng, kế thừa config.toml"],
+    ["仅当前 thread 使用 Standard，并切到自定义模式", "Use Standard for the current thread only and switch to custom mode", "Chỉ dùng Standard cho thread hiện tại và chuyển sang chế độ tùy chỉnh"],
+    ["仅当前 thread 使用 Fast，并切到自定义模式", "Use Fast for the current thread only and switch to custom mode", "Chỉ dùng Fast cho thread hiện tại và chuyển sang chế độ tùy chỉnh"],
+    ["暂无推荐内容。", "No recommendations yet.", "Chưa có đề xuất."],
+    ["推荐内容加载中…", "Loading recommendations...", "Đang tải đề xuất..."],
+    ["暂无赞助商推荐。", "No sponsor recommendations yet.", "Chưa có đề xuất tài trợ."],
+    ["暂无普通推荐。", "No regular recommendations yet.", "Chưa có đề xuất thông thường."],
+    ["支付宝赞赏码", "Alipay support QR code", "Mã QR ủng hộ Alipay"],
+    ["微信赞赏码", "WeChat support QR code", "Mã QR ủng hộ WeChat"],
+    ["强制安装", "Force install", "Buộc cài"],
+    ["插件", "Plugins", "Plugin"],
+    ["安装", "Install", "Cài"],
+    ["插件 - 已解锁", "Plugins - Unlocked", "Plugin - Đã mở khóa"],
+    ["OpenAI插件1(Codex++)", "OpenAI Plugin 1 (Codex++)", "Plugin OpenAI 1 (Codex++)"],
+    ["OpenAI插件2(Codex++)", "OpenAI Plugin 2 (Codex++)", "Plugin OpenAI 2 (Codex++)"],
+    ["OpenAI插件3(Codex++)", "OpenAI Plugin 3 (Codex++)", "Plugin OpenAI 3 (Codex++)"],
+    ["已归档对话", "Archived conversations", "Hội thoại đã lưu trữ"],
+    ["取消归档", "Unarchive", "Bỏ lưu trữ"],
+    ["归档对话", "Archive conversation", "Lưu trữ hội thoại"],
+    ["置顶对话", "Pin conversation", "Ghim hội thoại"],
+    ["确认", "Confirm", "Xác nhận"],
+    ["桥接不可用，请重启启动器", "Bridge unavailable. Restart the launcher.", "Bridge không khả dụng, hãy khởi động lại launcher."],
+    ["导出结果不完整", "Export result is incomplete", "Kết quả xuất chưa đầy đủ"],
+    ["Codex 状态 API 不可用", "Codex status API unavailable", "API trạng thái Codex không khả dụng"],
+    ["刚刚", "Just now", "Vừa xong"],
+    ["未命名项目", "Untitled project", "Dự án chưa đặt tên"],
+    ["普通对话", "General chats", "Trò chuyện thường"],
+    ["不属于任何项目", "Not in any project", "Không thuộc dự án nào"],
+    ["暂无对话", "No conversations", "Chưa có hội thoại"],
+    ["未找到会话 ID", "Session ID not found", "Không tìm thấy ID phiên"],
+    ["目标项目路径为空", "Target project path is empty", "Đường dẫn dự án đích đang trống"],
+    ["目标项目不在 Codex 项目列表中", "Target project is not in the Codex project list", "Dự án đích không nằm trong danh sách dự án Codex"],
+    ["移动项目失败", "Failed to move project", "Chuyển dự án thất bại"],
+    ["无法安全识别 Codex 原生 worktree 表单，请使用 Codex++ 菜单创建。", "Could not safely identify the native Codex worktree form. Use the Codex++ menu to create it.", "Không thể nhận diện an toàn form worktree gốc của Codex. Hãy tạo bằng menu Codex++."],
+    ["创建 upstream worktree 失败", "Failed to create upstream worktree", "Tạo upstream worktree thất bại"],
+    ["正在读取仓库默认值…", "Reading repository defaults...", "Đang đọc mặc định repository..."],
+    ["读取仓库默认值失败", "Failed to read repository defaults", "Không đọc được mặc định repository"],
+    ["仓库路径、分支名、worktree 路径、remote 和 base branch 都必须填写。", "Repository path, branch name, worktree path, remote, and base branch are all required.", "Cần nhập đủ đường dẫn repository, tên nhánh, đường dẫn worktree, remote và base branch."],
+    ["正在 fetch 并创建 worktree…", "Fetching and creating worktree...", "Đang fetch và tạo worktree..."],
+    ["等价于 git worktree add -b branch path upstream/base。创建前会先 fetch 远端分支。", "Equivalent to git worktree add -b branch path upstream/base. The remote branch is fetched before creation.", "Tương đương git worktree add -b branch path upstream/base. Nhánh remote sẽ được fetch trước khi tạo."],
+    ["仓库路径", "Repository path", "Đường dẫn repository"],
+    ["新分支名", "New branch name", "Tên nhánh mới"],
+    ["Worktree 路径", "Worktree path", "Đường dẫn worktree"],
+    ["移动对话", "Move conversation", "Chuyển hội thoại"],
+    ["加载项目中...", "Loading projects...", "Đang tải dự án..."],
+    ["没有可用目标", "No available targets", "Không có đích khả dụng"],
+    ["移动", "Move", "Chuyển"],
+    ["移动中", "Moving", "Đang chuyển"],
+    ["删除成功", "Deleted", "Đã xóa"],
+    ["删除失败", "Delete failed", "Xóa thất bại"],
+    ["导出成功", "Exported", "Đã xuất"],
+    ["导出失败", "Export failed", "Xuất thất bại"],
+    ["导出失败：未找到归档会话 ID", "Export failed: archived session ID not found", "Xuất thất bại: không tìm thấy ID phiên đã lưu trữ"],
+    ["更多操作", "More actions", "Thao tác khác"],
+    ["导出", "Export", "Xuất"],
   ];
 
   const codexPlusI18nMaps = (() => {
@@ -1165,15 +1238,78 @@
   }
 
   function codexPlusTranslatePattern(text, language) {
+    if (text.includes("\n")) {
+      const lines = text.split("\n");
+      const translatedLines = lines.map((line) => codexPlusTranslateText(line, language));
+      if (translatedLines.some((line, index) => line !== lines[index])) return translatedLines.join("\n");
+    }
     const deleteMessage = /^删除[“\"](.+)[”\"]？$/.exec(text);
     if (deleteMessage) return language === "vi" ? `Xóa “${deleteMessage[1]}”?` : `Delete “${deleteMessage[1]}”?`;
     const builtInUser = /^内置：(.+)\s+用户：(.+)$/.exec(text);
     if (builtInUser) return language === "vi" ? `Tích hợp: ${builtInUser[1]}  Người dùng: ${builtInUser[2]}` : `Built-in: ${builtInUser[1]}  User: ${builtInUser[2]}`;
+    const visitLink = /^访问\s+(.+)$/.exec(text);
+    if (visitLink) return language === "vi" ? `Truy cập ${visitLink[1]}` : `Visit ${visitLink[1]}`;
+    const missingCodexAsset = /^未找到 Codex App asset:\s*(.+)$/.exec(text);
+    if (missingCodexAsset) return language === "vi" ? `Không tìm thấy asset Codex App: ${missingCodexAsset[1]}` : `Codex App asset not found: ${missingCodexAsset[1]}`;
+    const currentTier = /^当前：(.+)$/.exec(text);
+    if (currentTier) return language === "vi" ? `Hiện tại: ${currentTier[1]}` : `Current: ${currentTier[1]}`;
+    const inheritedTier = /^继承 config\.toml：(.+)$/.exec(text);
+    if (inheritedTier) return language === "vi" ? `Kế thừa config.toml: ${inheritedTier[1]}` : `Inherit config.toml: ${inheritedTier[1]}`;
+    const customDefault = /^自定义：默认 (.+)$/.exec(text);
+    if (customDefault) return language === "vi" ? `Tùy chỉnh: mặc định ${customDefault[1]}` : `Custom: default ${customDefault[1]}`;
+    const customThread = /^自定义：当前 thread (.+)$/.exec(text);
+    if (customThread) return language === "vi" ? `Tùy chỉnh: thread hiện tại ${customThread[1]}` : `Custom: current thread ${customThread[1]}`;
+    const serviceMode = /^服务模式：(.+)$/.exec(text);
+    if (serviceMode) return language === "vi" ? `Chế độ dịch vụ: ${codexPlusTranslateText(serviceMode[1], language)}` : `Service mode: ${codexPlusTranslateText(serviceMode[1], language)}`;
+    const currentThread = /^当前 thread：(.+)$/.exec(text);
+    if (currentThread) return language === "vi" ? `Thread hiện tại: ${currentThread[1]}` : `Current thread: ${currentThread[1]}`;
+    const threadInherit = /^当前 thread 不单独覆盖，继承自定义默认 (.+)$/.exec(text);
+    if (threadInherit) return language === "vi" ? `Thread hiện tại không override riêng, kế thừa mặc định tùy chỉnh ${threadInherit[1]}` : `Current thread does not override; inherits custom default ${threadInherit[1]}`;
+    const threadServiceMode = /^(当前 thread|新 thread 草稿)服务模式：(.+)$/.exec(text);
+    if (threadServiceMode) return language === "vi" ? `${codexPlusTranslateText(threadServiceMode[1], language)} chế độ dịch vụ: ${codexPlusTranslateText(threadServiceMode[2], language)}` : `${codexPlusTranslateText(threadServiceMode[1], language)} service mode: ${codexPlusTranslateText(threadServiceMode[2], language)}`;
+    const branchInUse = /^该分支已在另一个 worktree 使用：(.+)$/.exec(text);
+    if (branchInUse) return language === "vi" ? `Nhánh này đang được worktree khác dùng: ${branchInUse[1]}` : `This branch is already used by another worktree: ${branchInUse[1]}`;
+    const willCreateWorktree = /^将从 (.+) 创建(?:新 )?worktree。?$/.exec(text);
+    if (willCreateWorktree) return language === "vi" ? `Sẽ tạo worktree từ ${willCreateWorktree[1]}.` : `Will create a worktree from ${willCreateWorktree[1]}.`;
+    const createdWorktree = /^已从 (.+) 创建 worktree$/.exec(text);
+    if (createdWorktree) return language === "vi" ? `Đã tạo worktree từ ${createdWorktree[1]}` : `Created worktree from ${createdWorktree[1]}`;
+    const createdWorktreePath = /^已从 (.+) 创建：(.+)$/.exec(text);
+    if (createdWorktreePath) return language === "vi" ? `Đã tạo từ ${createdWorktreePath[1]}: ${createdWorktreePath[2]}` : `Created from ${createdWorktreePath[1]}: ${createdWorktreePath[2]}`;
+    const createdUpstreamWorktree = /^已创建 upstream worktree：(.+)$/.exec(text);
+    if (createdUpstreamWorktree) return language === "vi" ? `Đã tạo upstream worktree: ${createdUpstreamWorktree[1]}` : `Created upstream worktree: ${createdUpstreamWorktree[1]}`;
+    const relativeTime = /^(\d+)\s+(分|小时|天|周|月|年)$/.exec(text);
+    if (relativeTime) {
+      const units = {
+        en: { "分": "min", "小时": "h", "天": "d", "周": "w", "月": "mo", "年": "y" },
+        vi: { "分": "phút", "小时": "giờ", "天": "ngày", "周": "tuần", "月": "tháng", "年": "năm" },
+      };
+      return `${relativeTime[1]} ${units[language][relativeTime[2]]}`;
+    }
+    const moveTitle = /^移动[“\"](.+)[”\"]$/.exec(text);
+    if (moveTitle) return language === "vi" ? `Chuyển “${moveTitle[1]}”` : `Move “${moveTitle[1]}”`;
+    const movedProjectless = /^已移动到普通对话：[“\"](.+)[”\"]$/.exec(text);
+    if (movedProjectless) return language === "vi" ? `Đã chuyển tới Trò chuyện thường: “${movedProjectless[1]}”` : `Moved to General chats: “${movedProjectless[1]}”`;
+    const movedProject = /^已移动到[“\"](.+)[”\"]：[“\"](.+)[”\"]$/.exec(text);
+    if (movedProject) return language === "vi" ? `Đã chuyển tới “${movedProject[1]}”: “${movedProject[2]}”` : `Moved to “${movedProject[1]}”: “${movedProject[2]}”`;
+    const moveFailed = /^移动失败：(.+)$/.exec(text);
+    if (moveFailed) return language === "vi" ? `Chuyển thất bại: ${moveFailed[1]}` : `Move failed: ${moveFailed[1]}`;
+    const loadProjectsFailed = /^加载项目失败：(.+)$/.exec(text);
+    if (loadProjectsFailed) return language === "vi" ? `Tải dự án thất bại: ${loadProjectsFailed[1]}` : `Failed to load projects: ${loadProjectsFailed[1]}`;
+    const jumpTo = /^跳转到：(.+)$/.exec(text);
+    if (jumpTo) return language === "vi" ? `Nhảy tới: ${jumpTo[1]}` : `Jump to: ${jumpTo[1]}`;
     return null;
   }
 
   function translateCodexPlusElement(root) {
     const language = codexPlusLanguage();
+    const allElements = [root, ...Array.from(root.querySelectorAll?.("*") || [])].filter((node) => node instanceof Element);
+    allElements.forEach((element) => {
+      if (element.closest("script, style, code, pre, textarea, input")) return;
+      const childNodes = Array.from(element.childNodes || []);
+      if (!childNodes.length || childNodes.some((node) => node.nodeType !== Node.TEXT_NODE)) return;
+      const next = codexPlusTranslateText(element.textContent, language);
+      if (next !== element.textContent) element.textContent = next;
+    });
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         const parent = node.parentElement;
@@ -1582,8 +1718,8 @@
       node.dataset.tier = state.tier;
       node.dataset.disabled = String(!!state.disabled);
       node.textContent = state.label;
-      node.title = state.title;
-      node.setAttribute("aria-label", state.title);
+      node.title = codexPlusTranslateText(state.title);
+      node.setAttribute("aria-label", codexPlusTranslateText(state.title));
     });
   }
 
@@ -1597,9 +1733,9 @@
     });
     document.querySelectorAll("[data-codex-service-tier-status]").forEach((node) => {
       node.dataset.status = featureEnabled && backendConnected ? (codexServiceTierState.status || "loading") : (backendChecking ? "loading" : "failed");
-      node.textContent = featureEnabled
+      node.textContent = codexPlusTranslateText(featureEnabled
         ? (backendConnected ? (codexServiceTierState.message || "未读取") : (backendChecking ? "正在检查后端…" : "未连接"))
-        : "未启用";
+        : "未启用");
     });
     document.querySelectorAll("[data-codex-service-tier-inherit]").forEach((button) => {
       button.disabled = !featureEnabled || !backendConnected || codexServiceTierState.status === "loading";
@@ -1620,7 +1756,7 @@
     document.querySelectorAll("[data-codex-service-tier-thread-inherit]").forEach((button) => {
       button.disabled = !featureEnabled || !backendConnected || codexServiceTierState.status === "loading";
       button.dataset.active = String(codexServiceTierState.controlMode === "custom" && codexServiceTierState.threadMode === "inherit");
-      button.title = `当前 thread 不单独覆盖，继承自定义默认 ${codexServiceTierState.defaultMode || "inherit"}`;
+      button.title = codexPlusTranslateText(`当前 thread 不单独覆盖，继承自定义默认 ${codexServiceTierState.defaultMode || "inherit"}`);
     });
     document.querySelectorAll("[data-codex-service-tier-thread-standard]").forEach((button) => {
       button.disabled = !featureEnabled || !backendConnected || codexServiceTierState.status === "loading";
@@ -2087,7 +2223,10 @@
     } finally {
       codexPlusAdsLoaded = true;
       const panel = document.querySelector('[data-codex-plus-panel="sponsor"] .codex-plus-ad-remote');
-      if (panel) panel.innerHTML = renderCodexPlusAds();
+      if (panel) {
+        panel.innerHTML = renderCodexPlusAds();
+        translateCodexPlusElement(panel);
+      }
     }
   }
 
@@ -2608,9 +2747,9 @@
   }
 
   function displayNameForPluginMarketplaceName(name, fallback) {
-    if (name === "openai-bundled" || name === "codex-plus-openai-bundled") return "OpenAI插件1(Codex++)";
-    if (name === "openai-curated" || name === "codex-plus-openai-curated") return "OpenAI插件2(Codex++)";
-    if (name === "openai-primary-runtime" || name === "codex-plus-openai-primary-runtime") return "OpenAI插件3(Codex++)";
+    if (name === "openai-bundled" || name === "codex-plus-openai-bundled") return codexPlusTranslateText("OpenAI插件1(Codex++)");
+    if (name === "openai-curated" || name === "codex-plus-openai-curated") return codexPlusTranslateText("OpenAI插件2(Codex++)");
+    if (name === "openai-primary-runtime" || name === "codex-plus-openai-primary-runtime") return codexPlusTranslateText("OpenAI插件3(Codex++)");
     return fallback;
   }
 
@@ -2878,24 +3017,24 @@
     const byIcon = document.querySelector(`${selectors.pluginNavButton} ${selectors.pluginSvgPath}`)?.closest("button");
     if (byIcon) return byIcon;
     return Array.from(document.querySelectorAll(selectors.pluginNavButton))
-      .find((button) => /^(插件|Plugins)(\s+-\s+.*)?$/i.test((button.textContent || "").trim())) || null;
+      .find((button) => /^(插件|Plugins|Plugin)(\s+-\s+.*)?$/i.test((button.textContent || "").trim())) || null;
   }
 
   function labelUnlockedPluginEntry(button) {
     const labelTextNode = Array.from(button.querySelectorAll("span, div")).reverse()
       .flatMap((node) => Array.from(node.childNodes))
-      .find((node) => node.nodeType === 3 && /^(插件|Plugins)( - 已解锁| - Unlocked)?$/i.test((node.nodeValue || "").trim()));
+      .find((node) => node.nodeType === 3 && /^(插件|Plugins|Plugin)( - 已解锁| - Unlocked| - Đã mở khóa)?$/i.test((node.nodeValue || "").trim()));
     if (!labelTextNode) return;
     const current = (labelTextNode.nodeValue || "").trim();
-    labelTextNode.nodeValue = /^Plugins/i.test(current) ? "Plugins - Unlocked" : "插件 - 已解锁";
+    labelTextNode.nodeValue = codexPlusTranslateText(/^Plugins/i.test(current) ? "Plugins - Unlocked" : "插件 - 已解锁");
   }
 
   function clearPluginEntryUnlockLabel(button) {
     const labelTextNode = Array.from(button.querySelectorAll("span, div")).reverse()
       .flatMap((node) => Array.from(node.childNodes))
-      .find((node) => node.nodeType === 3 && /^(插件 - 已解锁|Plugins - Unlocked)$/i.test((node.nodeValue || "").trim()));
+      .find((node) => node.nodeType === 3 && /^(插件 - 已解锁|Plugins - Unlocked|Plugin - Đã mở khóa)$/i.test((node.nodeValue || "").trim()));
     if (!labelTextNode) return;
-    labelTextNode.nodeValue = /^Plugins/i.test((labelTextNode.nodeValue || "").trim()) ? "Plugins" : "插件";
+    labelTextNode.nodeValue = codexPlusTranslateText(/^Plugins/i.test((labelTextNode.nodeValue || "").trim()) ? "Plugins" : "插件");
   }
 
   function enablePluginEntry() {
@@ -2938,7 +3077,7 @@
   }
 
   function isInstallButtonLabel(text) {
-    return /^安装\s*/.test(text) || /^Install\s*/i.test(text) || text === "强制安装";
+    return /^安装\s*/.test(text) || /^Install\s*/i.test(text) || /^Cài\s*/i.test(text) || text === "强制安装" || text === "Buộc cài";
   }
 
   function patchReactDisabledProps(element) {
@@ -3004,7 +3143,7 @@
       if (isInstallButtonLabel((node.nodeValue || "").trim())) textNode = node;
     }
     if (textNode) {
-      textNode.nodeValue = "强制安装";
+      textNode.nodeValue = codexPlusTranslateText("强制安装");
     }
   }
 
@@ -3013,10 +3152,10 @@
     let textNode = null;
     while (!textNode && walker.nextNode()) {
       const node = walker.currentNode;
-      if ((node.nodeValue || "").trim() === "强制安装") textNode = node;
+      if (["强制安装", "Force install", "Buộc cài"].includes((node.nodeValue || "").trim())) textNode = node;
     }
     if (textNode) {
-      textNode.nodeValue = "安装";
+      textNode.nodeValue = codexPlusTranslateText("安装");
     }
   }
 
@@ -5479,7 +5618,7 @@
       const worktreePath = usedBranches.get(branchMenuItemLabel(item));
       if (!worktreePath) continue;
       item.setAttribute(branchWorktreePathAttribute, worktreePath);
-      item.setAttribute("title", `该分支已在另一个 worktree 使用：${worktreePath}`);
+      item.setAttribute("title", codexPlusTranslateText(`该分支已在另一个 worktree 使用：${worktreePath}`));
     }
   }
 
@@ -5924,7 +6063,7 @@
     const messageNode = dialog.querySelector("[data-codex-upstream-worktree-message]");
     if (!messageNode) return;
     messageNode.dataset.status = status;
-    messageNode.textContent = message || "";
+    messageNode.textContent = codexPlusTranslateText(message || "");
   }
 
   async function loadUpstreamWorktreeDefaults(dialog) {
@@ -6143,7 +6282,7 @@
   function finishProjectMove(row, button, ref, target, message) {
     releaseDeleteFocus(row, button);
     button.disabled = false;
-    button.textContent = "移动";
+    button.textContent = codexPlusTranslateText("移动");
     saveProjectMoveProjection(ref, target, target.sortMs || rowSortMs(row, ref, target));
     if (target.kind === "projectless") moveRowToChats(row, target);
     refreshAfterProjectMove();
@@ -6152,7 +6291,7 @@
 
   async function applyProjectMove(row, button, ref, target) {
     button.disabled = true;
-    button.textContent = "移动中";
+    button.textContent = codexPlusTranslateText("移动中");
     try {
       if (target.kind === "projectless") {
         const result = await moveSessionToProjectless(ref);
@@ -6163,7 +6302,7 @@
       }
     } catch (error) {
       button.disabled = false;
-      button.textContent = "移动";
+      button.textContent = codexPlusTranslateText("移动");
       showToast(`移动失败：${error?.message || error}`, null);
     }
   }
@@ -6184,6 +6323,7 @@
         <div class="codex-project-move-list"><div class="codex-project-move-empty">加载项目中...</div></div>
       </div>
     `;
+    translateCodexPlusElement(overlay);
     const panel = overlay.querySelector(".codex-project-move-panel");
     const rect = button.getBoundingClientRect();
     const panelWidth = Math.min(360, Math.max(240, window.innerWidth - 32));
@@ -6207,6 +6347,7 @@
       list.innerHTML = "";
       if (targets.length === 0) {
         list.innerHTML = `<div class="codex-project-move-empty">没有可用目标</div>`;
+        translateCodexPlusElement(list);
         return;
       }
       for (const target of targets) {
@@ -6214,8 +6355,8 @@
         item.type = "button";
         item.className = "codex-project-move-item";
         item.innerHTML = `
-          <div class="codex-project-move-item-title">${escapeHtml(target.label)}</div>
-          <div class="codex-project-move-item-path">${escapeHtml(target.description)}</div>
+          <div class="codex-project-move-item-title">${escapeHtml(codexPlusTranslateText(target.label))}</div>
+          <div class="codex-project-move-item-path">${escapeHtml(codexPlusTranslateText(target.description))}</div>
         `;
         item.addEventListener("click", async (selectEvent) => {
           selectEvent.preventDefault();
@@ -6404,7 +6545,7 @@
     const item = document.createElement("button");
     item.type = "button";
     item.className = "codex-session-more-menu-item";
-    item.innerHTML = `<span class="codex-session-more-menu-icon">${icon}</span><span>${label}</span>`;
+    item.innerHTML = `<span class="codex-session-more-menu-icon">${icon}</span><span>${codexPlusTranslateText(label)}</span>`;
     item.addEventListener("click", onActivate, true);
     return item;
   }
@@ -6441,8 +6582,9 @@
   }
 
   function configureActionButton(button, label, icon) {
-    button.setAttribute("aria-label", label);
-    button.dataset.codexActionLabel = label;
+    const translatedLabel = codexPlusTranslateText(label);
+    button.setAttribute("aria-label", translatedLabel);
+    button.dataset.codexActionLabel = translatedLabel;
     button.removeAttribute("title");
     button.textContent = icon;
   }
@@ -6460,8 +6602,9 @@
   }
 
   function configureSvgActionButton(button, label, svg) {
-    button.setAttribute("aria-label", label);
-    button.dataset.codexActionLabel = label;
+    const translatedLabel = codexPlusTranslateText(label);
+    button.setAttribute("aria-label", translatedLabel);
+    button.dataset.codexActionLabel = translatedLabel;
     button.removeAttribute("title");
     button.innerHTML = svg;
   }
@@ -6645,7 +6788,7 @@
       exportButton.type = "button";
       exportButton.className = `codex-archive-delete-all codex-archive-row-button ${exportButtonClass}`;
       exportButton.dataset.codexArchiveRowAction = "export";
-      exportButton.textContent = "导出";
+      exportButton.textContent = codexPlusTranslateText("导出");
       ["pointerdown", "mousedown", "mouseup", "touchstart"].forEach((eventName) => {
         exportButton.addEventListener(eventName, stopArchivedButtonEvent, true);
       });
@@ -6819,7 +6962,7 @@
     marker.type = "button";
     marker.className = timelineMarkerClass;
     marker.style.top = `${question.markerTop}%`;
-    marker.setAttribute("aria-label", `跳转到：${truncateTimelineQuestion(question.text)}`);
+    marker.setAttribute("aria-label", codexPlusTranslateText(`跳转到：${truncateTimelineQuestion(question.text)}`));
     const tooltip = document.createElement("span");
     tooltip.className = timelineTooltipClass;
     tooltip.id = `codex-conversation-timeline-tooltip-${question.nodeId}`;
