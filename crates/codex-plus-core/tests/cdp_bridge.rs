@@ -184,7 +184,7 @@ fn injection_script_keeps_bundled_marketplace_name_for_default_filter() {
     assert!(script.contains("codexPluginMarketplaceUnlockVersion = \"10\""));
     assert!(script.contains("if (name === \"openai-bundled\") return \"\""));
     assert!(!script.contains("if (name === \"openai-bundled\") return \"codex-plus-openai-bundled\""));
-    assert!(script.contains("if (name === \"openai-bundled\" || name === \"codex-plus-openai-bundled\") return \"OpenAI插件1(Codex++)\""));
+    assert!(script.contains("if (name === \"openai-bundled\" || name === \"codex-plus-openai-bundled\") return codexPlusTranslateText(\"OpenAI插件1(Codex++)\")"));
 }
 
 #[test]
