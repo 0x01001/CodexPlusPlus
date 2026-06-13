@@ -168,7 +168,7 @@ Telegram 频道：<https://t.me/CodexPlusPlus>
 - Provider 同步：启动前同步本地会话 metadata，切换供应商后旧会话仍可见。
 - Zed 打开入口：识别远程 SSH 上下文后，可从 Codex 直接打开对应文件到 Zed Remote Development。
 - Upstream worktree 创建：可从 `upstream/<base-branch>` 创建新 worktree，创建前自动 fetch 远端分支，降低从陈旧本地 HEAD 派生导致的冲突风险。
-- GitHub Release 自动更新，管理工具和静默启动器都会检测可用更新。
+- GitHub Release 自动更新，管理工具可检查并启动更新，静默入口启动时不会弹出管理工具。
 - Windows 单实例、无黑框启动、管理员权限清单、系统桌面路径识别。
 - macOS x64/arm64 分架构 DMG，静默入口隐藏 Dock 图标。
 
@@ -238,7 +238,7 @@ https://cdn.jsdelivr.net/gh/BigPizzaV3/Ad-List@main/ads.json
 
 Codex++ 通过 GitHub Release 发布安装包。Windows 会生成 NSIS 安装程序，macOS 会生成 Intel x64 和 Apple Silicon arm64 两个 DMG。
 
-管理工具的“关于”页可以检查并启动更新。静默启动器发现新版本时会拉起管理工具并进入更新提示。
+管理工具的“关于”页可以检查并启动更新。静默启动器保持静默，不会因为发现新版本而自动拉起管理工具。
 
 ## 数据位置
 

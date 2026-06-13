@@ -121,7 +121,7 @@ The Windows installer creates desktop and Start Menu shortcuts. The macOS DMG in
 - Provider Sync to keep historical sessions visible after switching providers.
 - Zed open entry detects remote SSH context and opens the matching remote file in Zed Remote Development from Codex.
 - Upstream worktree creation: create new worktrees from `upstream/<base-branch>` after fetching the remote branch, reducing conflicts caused by stale local HEAD state.
-- GitHub Release updates. Both the manager and silent launcher can detect available updates.
+- GitHub Release updates can be checked and started from the manager. The silent launcher does not pop up the manager at startup.
 - Windows single instance, no console window, administrator manifest, and system Desktop path detection.
 - Separate macOS x64 and arm64 DMGs. The silent launcher hides its Dock icon.
 
@@ -172,7 +172,7 @@ Requests automatically append a `?v=timestamp` cache buster to avoid stale CDN c
 
 Codex++ publishes installers through GitHub Releases. Windows builds an NSIS installer, while macOS builds separate Intel x64 and Apple Silicon arm64 DMGs.
 
-The manager's About page can check and start updates. When the silent launcher finds a new version, it opens the manager directly on the update prompt.
+The manager's About page can check and start updates. The silent launcher stays silent and does not open the manager automatically when a new version is available.
 
 ## Data Locations
 

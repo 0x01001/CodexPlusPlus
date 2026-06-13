@@ -40,9 +40,6 @@ async fn main() -> Result<()> {
         activate_existing_codex_app(&options).await?;
         return Ok(());
     };
-    tokio::spawn(async {
-        let _ = notify_manager_when_update_available().await;
-    });
     let hooks = LauncherHooks::default();
     let handle = launch_and_inject_with_hooks(options, &hooks).await?;
     handle.wait_for_codex_exit().await?;
@@ -80,9 +77,7 @@ fn acquire_single_instance_guard_with_retry(
 }
 
 fn try_acquire_single_instance_guard() -> std::io::Result<std::net::TcpListener> {
-    codex_plus_core::ports::acquire_loopback_port_guard(
-        codex_plus_core::ports::LAUNCHER_GUARD_PORT,
-    )
+    codex_plus_core::ports::acquire_loopback_port_guard(codex_plus_core::ports::LAUNCHER_GUARD_PORT)
 }
 
 fn should_recover_stale_launcher(debug_port: u16) -> bool {
@@ -162,30 +157,6 @@ fn log_launcher_already_running(debug_port: u16) {
             "debug_port": debug_port
         }),
     );
-}
-
-async fn notify_manager_when_update_available() -> anyhow::Result<bool> {
-    let update =
-        codex_plus_core::update::check_for_update(codex_plus_core::version::VERSION).await?;
-    if !update.update_available {
-        return Ok(false);
-    }
-    open_manager_with_update_prompt()?;
-    Ok(true)
-}
-
-fn open_manager_with_update_prompt() -> anyhow::Result<()> {
-    let manager_path = manager_exe_path();
-    let mut command = std::process::Command::new(&manager_path);
-    command.arg("--show-update");
-    #[cfg(windows)]
-    {
-        command.creation_flags(codex_plus_core::windows_create_no_window());
-    }
-    command
-        .spawn()
-        .map(|_| ())
-        .map_err(|error| anyhow::anyhow!("启动管理工具失败：{error}"))
 }
 
 fn parse_launch_options<I, S>(args: I) -> LaunchOptions
@@ -741,19 +712,23 @@ mod tests {
             "async fn activate_existing_codex_app(options: &LaunchOptions) -> anyhow::Result<()> {\n    let hooks = LauncherHooks::default();"
         ));
         assert!(source.contains("hooks.start_helper(options.helper_port).await?"));
-        assert!(source.contains("hooks.ensure_injection(options.debug_port, options.helper_port).await"));
+        assert!(
+            source
+                .contains("hooks.ensure_injection(options.debug_port, options.helper_port).await")
+        );
         assert!(source.contains("injection_ready"));
     }
 
     #[test]
-    fn manager_update_prompt_uses_sidecar_manager_binary_name() {
-        let path = manager_exe_path();
+    fn silent_launcher_does_not_auto_open_manager_for_updates() {
+        let source = include_str!("main.rs");
+        let notify_update = ["notify_manager", "_when_update_available"].concat();
+        let update_prompt = ["open_manager", "_with_update_prompt"].concat();
+        let show_update_arg = ["--show", "-update"].concat();
 
-        assert!(
-            path.file_name()
-                .and_then(|name| name.to_str())
-                .is_some_and(|name| name.contains(codex_plus_core::install::MANAGER_BINARY))
-        );
+        assert!(!source.contains(&notify_update));
+        assert!(!source.contains(&update_prompt));
+        assert!(!source.contains(&show_update_arg));
     }
 }
 
